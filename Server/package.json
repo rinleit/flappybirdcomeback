@@ -1,0 +1,21 @@
+{
+  "name": "server.flappybird",
+  "version": "1.0.0",
+  "description": "server side",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nodejs",
+    "socket.io",
+    "flappybird"
+  ],
+  "author": "rinleit",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3",
+    "mongodb": "^3.1.4",
+    "socket.io": "^2.1.1"
+  }
+}

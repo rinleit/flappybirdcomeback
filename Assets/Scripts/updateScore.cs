@@ -15,7 +15,7 @@ public class updateScore : MonoBehaviour {
 		
 	}
 
-	public static void UpdateScore(string UID, int score, int bestscore, string servicename)
+	public static void submitScore(string UID, int score, int bestscore, string servicename)
 	{
 		List<string> inputval = new List<string>() {UID, score.ToString(), bestscore.ToString()};
 		string request = SocketIOScript.CreateRequest(UID, servicename, inputval);

@@ -173,7 +173,7 @@ public class SocketIOScript : MonoBehaviour {
 				process_register(socket, json);
 
 				Debug.Log("Recv >>" + msg);
-				DoClose();
+				Destroy();
 			});
 
 			socket.On("fbcb_submitScore", (data) => {
@@ -183,7 +183,7 @@ public class SocketIOScript : MonoBehaviour {
 				process_submitScore(socket, json);
 
 				Debug.Log("Recv >>" + msg);
-				DoClose();
+				Destroy();
 			});
 
 		}

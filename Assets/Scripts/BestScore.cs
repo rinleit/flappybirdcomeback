@@ -8,6 +8,7 @@ public class BestScore : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        // hide element Tens and Hundered
         (bTens.gameObject as GameObject).SetActive(false);
         (bHundreds.gameObject as GameObject).SetActive(false);
 	}

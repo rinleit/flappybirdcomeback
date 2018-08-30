@@ -7,6 +7,7 @@ using System.Text;
 public enum GameState
 {
     Login,
+    PlayMode,
     Intro,
     Playing,
     Dead

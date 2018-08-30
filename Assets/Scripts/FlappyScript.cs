@@ -208,12 +208,12 @@ public class FlappyScript : MonoBehaviour
         {
             BestScore.bScore = ScoreManagerScript.Score;
             NewBestScore.SetActive(true);
-            updateScore.UpdateScore(UserID, ScoreManagerScript.Score, BestScore.bScore, "fbcb_submitScore");
+            updateScore.submitScore(UserID, ScoreManagerScript.Score, BestScore.bScore, "fbcb_submitScore");
         }
         else
         {
             NewBestScore.SetActive(false);
-            updateScore.UpdateScore(UserID, ScoreManagerScript.Score, BestScore.bScore, "fbcb_submitScore");
+            updateScore.submitScore(UserID, ScoreManagerScript.Score, BestScore.bScore, "fbcb_submitScore");
         }
     
         DeathGUI.SetActive(true);
