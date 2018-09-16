@@ -7,7 +7,6 @@ const test = require('assert');
 var url = 'mongodb://localhost:27017';
 const dbName = 'FBCB';
 
-
 const ConnectDB = function (url, callback)
 {
     MongoClient.connect(url,{useNewUrlParser: true} ,function(err, client) {
@@ -66,7 +65,7 @@ const CreateAccount = function (msg, callback)
         {
           callback(false);
         }
-        else if (docs)
+        else
         {
           collection.insert([
             {userid : msg.id, 
@@ -107,8 +106,30 @@ const SubmitScore = function(msg, callback)
 
   });
 }
-var socketId = 0;
-var serseq = 0;
+
+const Rank = function(msg, callback)
+{
+  ConnectDB(url, function (client)
+  {
+    // Get the documents collection
+    var collection = client.db(dbName).collection('user');
+    var userid = msg.id;
+    // Find some documents
+    collection.find().sort({ userBestScore: -1 }).toArray(function(err, docs){
+        if (!docs)
+        {
+          callback(false);
+          client.close();
+        }
+        else
+        {
+          callback(docs);
+          client.close();
+        }
+    });  
+  });
+}
+
 
 function process_login(socket, serseq, jsonObj)
 {
@@ -153,7 +174,7 @@ function process_register(socket, serseq, jsonObj)
                   servn: 'fbcb_reg',
                   errMsg: 'Register Success !!!',
                   errCode: "1",
-                  inputval: []
+                  inputval: ["0"]
                 });
           }
   else
@@ -164,7 +185,7 @@ function process_register(socket, serseq, jsonObj)
                 servn: 'fbcb_reg',
                 errMsg: 'Register Fail !!!',
                 errCode: "0",
-                inputval: []
+                inputval: ["0"]
               });
           }
 
@@ -204,9 +225,58 @@ function process_submitScore(socket, serseq, jsonObj)
   });
 }
 
+
+function process_rank(socket, serseq, jsonObj)
+{
+  Rank(jsonObj, function(ret) {
+      if (ret)
+      {
+
+        var json = {
+          seq: serseq,
+          id: jsonObj.id,
+          servn: 'fbcb_rank',
+          errMsg: 'Get Rank success !!!',
+          errCode: '1',
+          inputval: []
+        }
+
+        ret.forEach(function(ele) {
+          var str = JSON.stringify({userName: ele.userName, userId: ele.userid, userBestScore: ele.userBestScore});
+          json['inputval'].push(str);
+        });
+
+        console.log(json);
+  
+        socket.emit('fbcb_rank', json);
+      
+      }
+      else
+      {
+
+        socket.emit('fbcb_rank', {
+          seq: serseq,
+          id: jsonObj.id,
+          servn: 'fbcb_rank',
+          errMsg: 'Get Rank error !!!',
+          errCode: '0',
+          inputval: []
+        });
+
+      }
+  });
+}
+
+
+var socketId = 0;
+var serseq = 0;
+var ListSocket = [];
+
 io.on('connection', function(socket){
   socket.userId = socketId ++;
   console.log('A user connected, socket id: ' + socket.userId);
+  // append socket to List
+  ListSocket.push(socket);
 
   socket.on('fbcb_login', function(msg){
     serseq++;
@@ -228,6 +298,30 @@ io.on('connection', function(socket){
     var jsonObj =  JSON.parse(msg);
     console.log('Msg from user#' + jsonObj.id + " Msg: " + msg);
     process_submitScore(socket, serseq, jsonObj);
+  });
+
+
+  socket.on('fbcb_rank', function(msg)
+  {
+    serseq++;
+    var jsonObj =  JSON.parse(msg);
+    console.log('Msg from user#' + jsonObj.id + " Msg: " + msg);
+    process_rank(socket, serseq, jsonObj);
+  });
+
+
+  //Whenever someone disconnects this piece of code executed
+  socket.on('disconnect', function () {
+    console.log('A user disconnected');
+
+    for (var i = 0; i < ListSocket.length; i++)
+      if (ListSocket[i].userId === socket.userId) {
+          console.log('Remove socket userId ' + socket.userId);
+          ListSocket.splice(i, 1);
+          break;
+      }
+    
+    
   });
   
 });

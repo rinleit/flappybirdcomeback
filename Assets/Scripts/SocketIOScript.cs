@@ -81,8 +81,6 @@ public class SocketIOScript : MonoBehaviour {
 
 		if (LoginSucess && !FlappyScript.HadLogin)
 		{
-			// Hide LoginGUI if Login Sucesss !!!
-			//LoginGUI.SetActive(false);
 			ScoreManagerScript.Score = 0;
 			NameView.text = FlappyScript.UserName;
 			BestScoreView.text = FlappyScript.userBestScore;
@@ -146,6 +144,23 @@ public class SocketIOScript : MonoBehaviour {
 		}
 	}
 
+	protected void process_rank(Socket socket, Response json)
+	{
+		if (json.servn == "fbcb_rank")
+		{
+			if (json.errCode == "1" && json.id == FlappyScript.UserID)
+			{
+
+				Debug.Log("Get Rank Success !!!");
+			}
+			else
+			{
+				Debug.Log("Get Rank error !!!");
+			}
+		}
+
+	}
+
 	// Use this for initialization
 	public void DoOpen(string URL) {
 		if (socket == null) {
@@ -163,7 +178,7 @@ public class SocketIOScript : MonoBehaviour {
 				process_login(socket, json);
 
 				Debug.Log("Recv >> " + msg);
-				DoClose();
+				Destroy();
 			});
 
 			socket.On("fbcb_reg", (data) => {
@@ -181,6 +196,17 @@ public class SocketIOScript : MonoBehaviour {
 				var json = JsonConvert.DeserializeObject<Response>(msg);
 
 				process_submitScore(socket, json);
+
+				Debug.Log("Recv >>" + msg);
+				Destroy();
+			});
+
+			socket.On("fbcb_rank", (data) => {
+				string msg = data.ToString();
+		
+				var json = JsonConvert.DeserializeObject<Response>(msg);
+
+				process_rank(socket, json);
 
 				Debug.Log("Recv >>" + msg);
 				Destroy();

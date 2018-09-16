@@ -18,6 +18,9 @@ public class FlappyScript : MonoBehaviour
     public float RotateUpSpeed = 1, RotateDownSpeed = 1;
     public GameObject IntroGUI, DeathGUI, LoginGUI, NewBestScore;
     public Collider2D restartButtonGameCollider;
+
+    public Collider2D rankButton;
+
     public float VelocityPerJump = 3;
     public float XSpeed = 1;
 
@@ -101,9 +104,27 @@ public class FlappyScript : MonoBehaviour
                 GameStateManager.GameState = GameState.Intro;
                 Application.LoadLevel(Application.loadedLevelName);
             }
+
+            // check if user want to get Rank
+            if (rankButton == Physics2D.OverlapPoint
+                (Camera.main.ScreenToWorldPoint(contactPoint)))
+            {
+                getRank();
+            }
         }
 
     }
+
+    
+	void getRank()
+	{
+		var userId = FlappyScript.UserID;
+		var serviceName = "fbcb_rank";
+
+		List<string> inputval = new List<string>() {};
+		string request = SocketIOScript.CreateRequest(userId, serviceName, inputval);
+		SocketIOScript.SSend(serviceName, request);
+	}
 
 
     void FixedUpdate()

@@ -46,6 +46,7 @@ public class Login : MonoBehaviour {
 		string token = userName+"/"+userID+"/"+PWD;
 		System.IO.File.WriteAllText(path_file, token);
 		SendLogin(userName, userID, userPWD, "fbcb_reg");
+		LoginGUI.SetActive(false);
 	}
 
 	public static void SendLogin(string uname, string UID, string PWD, string servicename)
