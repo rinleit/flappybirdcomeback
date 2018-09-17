@@ -16,7 +16,7 @@ public class FlappyScript : MonoBehaviour
     public AudioClip FlyAudioClip, DeathAudioClip, ScoredAudioClip;
     public Sprite GetReadySprite;
     public float RotateUpSpeed = 1, RotateDownSpeed = 1;
-    public GameObject IntroGUI, DeathGUI, LoginGUI, NewBestScore;
+    public GameObject IntroGUI, DeathGUI, LoginGUI, NewBestScore, RankGUI;
     public Collider2D restartButtonGameCollider;
 
     public Collider2D rankButton;
@@ -36,6 +36,7 @@ public class FlappyScript : MonoBehaviour
         UserID = null;
         UserName = null;
         ScoreManagerScript.Score = 0;
+        GameStateManager.GameState = GameState.Login;
         CheckLogin();
     }
 
@@ -110,6 +111,7 @@ public class FlappyScript : MonoBehaviour
                 (Camera.main.ScreenToWorldPoint(contactPoint)))
             {
                 getRank();
+                //RankGUI.SetActive(true);
             }
         }
 

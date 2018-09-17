@@ -101,7 +101,7 @@ public class SocketIOScript : MonoBehaviour {
 		{
 			if (json.errCode == "1" && json.id == FlappyScript.UserID)
 			{
-				FlappyScript.userBestScore = json.inputval[0];
+				FlappyScript.userBestScore = Convert.ToString(json.inputval[0]);
 				LoginSucess = true;
 			}
 			else
@@ -150,7 +150,7 @@ public class SocketIOScript : MonoBehaviour {
 		{
 			if (json.errCode == "1" && json.id == FlappyScript.UserID)
 			{
-
+				updateScore.insertShowRankQueue(json.inputval);
 				Debug.Log("Get Rank Success !!!");
 			}
 			else

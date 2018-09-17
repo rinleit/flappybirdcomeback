@@ -93,7 +93,7 @@ const SubmitScore = function(msg, callback)
     // Get the documents collection
     var collection = client.db(dbName).collection('user');
     var query ={userid: msg.id};
-    var newvalues = {$set: {userScore: msg.inputval[1], userBestScore: msg.inputval[2]}  };
+    var newvalues = {$set: {userScore: msg.inputval[1], userBestScore: parseInt(msg.inputval[2])}  };
     collection.updateOne(query, newvalues, function(err, res){
       if (err) {
         callback(false);
@@ -136,7 +136,7 @@ function process_login(socket, serseq, jsonObj)
   TryLogin(jsonObj, function(ret){
   if (ret != null)
   {
-    var BestScore = ret.userBestScore;
+    var BestScore = ret.userBestScore.toString();
             socket.emit('fbcb_login', {
               seq: serseq,
               id: jsonObj.id,
@@ -242,7 +242,7 @@ function process_rank(socket, serseq, jsonObj)
         }
 
         ret.forEach(function(ele) {
-          var str = JSON.stringify({userName: ele.userName, userId: ele.userid, userBestScore: ele.userBestScore});
+          var str = JSON.stringify({userName: ele.userName, userId: ele.userid, userBestScore: ele.userBestScore.toString()});
           json['inputval'].push(str);
         });
 
